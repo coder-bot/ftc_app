@@ -121,8 +121,8 @@ public class Xeno4By4 extends OpMode {
 		// write the values to the motors
 		frontRight.setPower(throttleRight);
 		rearRight.setPower(throttleRight);
-		frontLeft.setPower(throttleLeft);
-		rearLeft.setPower(throttleLeft);
+		frontLeft.setPower(-1 * throttleLeft);
+		rearLeft.setPower(-1 * throttleLeft);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
