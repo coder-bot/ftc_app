@@ -103,23 +103,23 @@ public class SimpleRanger extends OpMode {
 		// 1 is full down
 		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
 		// and 1 is full right
-		float throttle = -gamepad1.left_stick_y;
-		float direction = gamepad1.left_stick_x;
-		float right = throttle - direction;
-		float left = throttle + direction;
+		float throttleRight = gamepad1.right_stick_y;
+		float throttleLeft = gamepad1.left_stick_y;
+		//float right = throttle - direction;
+		//float left = throttle + direction;
 
 		// clip the right/left values so that the values never exceed +/- 1
-		right = Range.clip(right, -1, 1);
-		left = Range.clip(left, -1, 1);
+		//right = Range.clip(right, -1, 1);
+		//left = Range.clip(left, -1, 1);
 
 		// scale the joystick value to make it easier to control
 		// the robot more precisely at slower speeds.
-		right = (float)scaleInput(right);
-		left =  (float)scaleInput(left);
+		throttleRight = (float)scaleInput(throttleRight);
+		throttleLeft =  (float)scaleInput(throttleLeft);
 
 		// write the values to the motors
-		motorRight.setPower(right);
-		motorLeft.setPower(left);
+		motorLeft.setPower(throttleRight);
+		motorRight.setPower(throttleLeft);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -128,8 +128,6 @@ public class SimpleRanger extends OpMode {
 		 * are currently write only.
 		 */
 		telemetry.addData("Text", "*** Robot Data***");
-		telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
-		telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
 
 	}
 
