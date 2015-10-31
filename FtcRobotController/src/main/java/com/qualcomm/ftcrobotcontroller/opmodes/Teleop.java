@@ -33,23 +33,37 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * TeleOp Mode
  * <p>
  * Enables control of the robot via the gamepad
  */
-public class TreadTeleop extends OpMode {
+public class Teleop extends OpMode {
 
 	DcMotor motorLeft;
 	DcMotor motorRight;
 
-	/**
-	 * Constructor
-	 */
-	public TreadTeleop() {
+	Servo armPrimary;
+	Servo armSecondary;
 
-	}
+	//Values for servo positions
+	double armPrimaryPosition;
+	double armSecondaryPosition;
+	//Values for servo position increments
+	final double armPrimaryDelta = 0.1;
+	final double armSecondaryDelta = 0.1;
+
+// --Commented out by Inspection START (10/31/2015 2:27 PM):
+//	/**
+//	 * Constructor
+//	 */
+//	public Teleop() {
+//
+//	}
+// --Commented out by Inspection STOP (10/31/2015 2:27 PM)
 
 	/*
 	 * Code to run when the op mode is first enabled goes here
@@ -58,28 +72,22 @@ public class TreadTeleop extends OpMode {
 	 */
 	@Override
 	public void init() {
-
-
 		/*
 		 * Use the hardwareMap to get the dc motors and servos by name. Note
 		 * that the names of the devices must match the names used when you
 		 * configured your robot and created the configuration file.
 		 */
-		
-		/*
-		 * For the demo Tetrix K9 bot we assume the following,
-		 *   There are two motors "motor_1" and "motor_2"
-		 *   "motor_1" is on the right side of the bot.
-		 *   "motor_2" is on the left side of the bot and reversed.
-		 *   
-		 * We also assume that there are two servos "servo_1" and "servo_6"
-		 *    "servo_1" controls the arm joint of the manipulator.
-		 *    "servo_6" controls the claw joint of the manipulator.
-		 */
+
 		motorLeft = hardwareMap.dcMotor.get("motor_1");
 		motorRight = hardwareMap.dcMotor.get("motor_2");
-		motorRight.setDirection(DcMotor.Direction.REVERSE);
+		motorLeft.setDirection(DcMotor.Direction.REVERSE);
 
+		armPrimary = hardwareMap.servo.get("servo_1");
+		armSecondary = hardwareMap.servo.get("servo_2");
+
+		//Initial servo position values
+		armPrimaryPosition = 0;
+		armSecondaryPosition = 0;
 	}
 
 	/*
@@ -89,26 +97,18 @@ public class TreadTeleop extends OpMode {
 	 */
 	@Override
 	public void loop() {
-
-		/*
-		 * Gamepad 1
-		 * 
-		 * Gamepad 1 controls the motors via the left stick, and it controls the
-		 * wrist/claw via the a,b, x, y buttons
-		 */
-
-		// throttle: left_stick_y ranges from -1 to 1, where -1 is full up, and
+		// left_stick_y ranges from -1 to 1, where -1 is full up, and
 		// 1 is full down
 		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
 		// and 1 is full right
-		float throttleLeft = gamepad1.left_stick_y;
+
+		//setting motor power levels
+		float throttleLeft = -gamepad1.left_stick_y;
 		float throttleRight = gamepad1.right_stick_y;
-		//float right = throttle - direction;
-		//float left = throttle + direction;
 
 		// clip the right/left values so that the values never exceed +/- 1
-		//right = Range.clip(right, -1, 1);
-		//left = Range.clip(left, -1, 1);
+		throttleLeft = Range.clip(throttleLeft, -1, 1);
+		throttleRight = Range.clip(throttleRight, -1, 1);
 
 		// scale the joystick value to make it easier to control
 		// the robot more precisely at slower speeds.
@@ -118,6 +118,20 @@ public class TreadTeleop extends OpMode {
 		// write the values to the motors
 		motorLeft.setPower(throttleLeft);
 		motorRight.setPower(throttleRight);
+
+		//setting servo positions
+		if (gamepad1.a) armPrimaryPosition -= armPrimaryDelta;
+		if (gamepad1.y) armPrimaryPosition += armPrimaryDelta;
+		if (gamepad1.x) armSecondaryPosition -= armSecondaryDelta;
+		if (gamepad1.b) armSecondaryPosition += armSecondaryDelta;
+
+		// clip the position values so that they never exceed their allowed range.
+		armPrimaryPosition = Range.clip(armPrimaryPosition, 0, 1);
+		armSecondaryPosition = Range.clip(armSecondaryPosition, 0, 1);
+
+		//write the values to the servos
+		armPrimary.setPosition(armPrimaryPosition);
+		armSecondary.setPosition(armSecondaryPosition);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -136,9 +150,7 @@ public class TreadTeleop extends OpMode {
 	 */
 	@Override
 	public void stop() {
-
 	}
-
 
 	/*
 	 * This method scales the joystick input so for low joystick values, the 
@@ -163,7 +175,7 @@ public class TreadTeleop extends OpMode {
 		}
 
 		// get value from the array.
-		double dScale = 0.0;
+		double dScale;
 		if (dVal < 0) {
 			dScale = -scaleArray[index];
 		} else {
@@ -173,5 +185,4 @@ public class TreadTeleop extends OpMode {
 		// return scaled value.
 		return dScale;
 	}
-
 }
