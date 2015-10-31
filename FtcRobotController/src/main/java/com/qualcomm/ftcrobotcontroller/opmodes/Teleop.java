@@ -45,10 +45,10 @@ public class Teleop extends OpMode {
 
 	DcMotor motorLeft;
 	DcMotor motorRight;
-
+/*
 	Servo armPrimary;
 	Servo armSecondary;
-
+*/
 	//Values for servo positions
 	double armPrimaryPosition;
 	double armSecondaryPosition;
@@ -81,10 +81,10 @@ public class Teleop extends OpMode {
 		motorLeft = hardwareMap.dcMotor.get("motor_1");
 		motorRight = hardwareMap.dcMotor.get("motor_2");
 		motorLeft.setDirection(DcMotor.Direction.REVERSE);
-
+/*
 		armPrimary = hardwareMap.servo.get("servo_1");
 		armSecondary = hardwareMap.servo.get("servo_2");
-
+*/
 		//Initial servo position values
 		armPrimaryPosition = 0;
 		armSecondaryPosition = 0;
@@ -120,19 +120,21 @@ public class Teleop extends OpMode {
 		motorRight.setPower(throttleRight);
 
 		//setting servo positions
+/*
 		if (gamepad1.a) armPrimaryPosition -= armPrimaryDelta;
 		if (gamepad1.y) armPrimaryPosition += armPrimaryDelta;
 		if (gamepad1.x) armSecondaryPosition -= armSecondaryDelta;
 		if (gamepad1.b) armSecondaryPosition += armSecondaryDelta;
-
+*/
 		// clip the position values so that they never exceed their allowed range.
 		armPrimaryPosition = Range.clip(armPrimaryPosition, 0, 1);
 		armSecondaryPosition = Range.clip(armSecondaryPosition, 0, 1);
 
 		//write the values to the servos
+/*
 		armPrimary.setPosition(armPrimaryPosition);
 		armSecondary.setPosition(armSecondaryPosition);
-
+*/
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
 		 * a legacy NXT-compatible motor controller, then the getPower() method
