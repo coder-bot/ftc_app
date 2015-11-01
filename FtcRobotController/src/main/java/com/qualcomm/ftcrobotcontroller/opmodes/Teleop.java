@@ -43,19 +43,23 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class Teleop extends OpMode {
 
-	DcMotor motorLeft;
-	DcMotor motorRight;
+	//motor declarations
+	DcMotor leftDrive;
+	DcMotor rightDrive;
+	DcMotor winch;
 
+	//motor power variables
 	double throttleRight;
 	double throttleLeft;
-/*
+
 	Servo armPrimary;
 	Servo armSecondary;
-*/
-	//Values for servo positions
+
+	//servo position variables
 	double armPrimaryPosition;
 	double armSecondaryPosition;
-	//Values for servo position increments
+
+	//servo increment constants
 	final double armPrimaryDelta = 0.1;
 	final double armSecondaryDelta = 0.1;
 
@@ -81,13 +85,14 @@ public class Teleop extends OpMode {
 		 * configured your robot and created the configuration file.
 		 */
 
-		motorRight = hardwareMap.dcMotor.get("motor_1");
-		motorLeft = hardwareMap.dcMotor.get("motor_2");
-		motorRight.setDirection(DcMotor.Direction.REVERSE);
-/*
+		rightDrive = hardwareMap.dcMotor.get("motor_1");
+		leftDrive = hardwareMap.dcMotor.get("motor_2");
+		winch = hardwareMap.dcMotor.get("motor_3");
+		rightDrive.setDirection(DcMotor.Direction.REVERSE);
+
 		armPrimary = hardwareMap.servo.get("servo_1");
 		armSecondary = hardwareMap.servo.get("servo_2");
-*/
+
 		//Initial servo position values
 		armPrimaryPosition = 0;
 		armSecondaryPosition = 0;
@@ -119,25 +124,30 @@ public class Teleop extends OpMode {
 		throttleRight = (float)scaleInput(throttleRight);
 
 		// write the values to the motors
-		motorLeft.setPower(throttleLeft);
-		motorRight.setPower(throttleRight);
+		leftDrive.setPower(throttleLeft);
+		rightDrive.setPower(throttleRight);
+
+		//button control of winch motor
+		if (gamepad1.dpad_down) winch.setPower(-1);
+		else if (gamepad1.dpad_up) winch.setPower(1);
+		else winch.setPower(0);
 
 		//setting servo positions
-/*
+
 		if (gamepad1.a) armPrimaryPosition -= armPrimaryDelta;
 		if (gamepad1.y) armPrimaryPosition += armPrimaryDelta;
 		if (gamepad1.x) armSecondaryPosition -= armSecondaryDelta;
 		if (gamepad1.b) armSecondaryPosition += armSecondaryDelta;
-*/
+
 		// clip the position values so that they never exceed their allowed range.
 		armPrimaryPosition = Range.clip(armPrimaryPosition, 0, 1);
 		armSecondaryPosition = Range.clip(armSecondaryPosition, 0, 1);
 
 		//write the values to the servos
-/*
+
 		armPrimary.setPosition(armPrimaryPosition);
 		armSecondary.setPosition(armSecondaryPosition);
-*/
+
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
 		 * a legacy NXT-compatible motor controller, then the getPower() method
