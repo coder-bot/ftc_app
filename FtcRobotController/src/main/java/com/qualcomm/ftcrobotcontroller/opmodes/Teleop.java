@@ -45,6 +45,9 @@ public class Teleop extends OpMode {
 
 	DcMotor motorLeft;
 	DcMotor motorRight;
+
+	double throttleRight;
+	double throttleLeft;
 /*
 	Servo armPrimary;
 	Servo armSecondary;
@@ -78,9 +81,9 @@ public class Teleop extends OpMode {
 		 * configured your robot and created the configuration file.
 		 */
 
-		motorLeft = hardwareMap.dcMotor.get("motor_1");
-		motorRight = hardwareMap.dcMotor.get("motor_2");
-		motorLeft.setDirection(DcMotor.Direction.REVERSE);
+		motorRight = hardwareMap.dcMotor.get("motor_1");
+		motorLeft = hardwareMap.dcMotor.get("motor_2");
+		motorRight.setDirection(DcMotor.Direction.REVERSE);
 /*
 		armPrimary = hardwareMap.servo.get("servo_1");
 		armSecondary = hardwareMap.servo.get("servo_2");
@@ -103,8 +106,8 @@ public class Teleop extends OpMode {
 		// and 1 is full right
 
 		//setting motor power levels
-		float throttleLeft = -gamepad1.left_stick_y;
-		float throttleRight = gamepad1.right_stick_y;
+		throttleLeft = -gamepad1.left_stick_y;
+		throttleRight = -gamepad1.right_stick_y;
 
 		// clip the right/left values so that the values never exceed +/- 1
 		throttleLeft = Range.clip(throttleLeft, -1, 1);
