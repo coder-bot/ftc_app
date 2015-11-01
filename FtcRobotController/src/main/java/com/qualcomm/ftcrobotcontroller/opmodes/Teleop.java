@@ -60,8 +60,8 @@ public class Teleop extends OpMode {
 	double armSecondaryPosition;
 
 	//servo increment constants
-	final double armPrimaryDelta = 0.1;
-	final double armSecondaryDelta = 0.1;
+	final double armPrimaryDelta = 0.005;
+	final double armSecondaryDelta = 0.005;
 
 // --Commented out by Inspection START (10/31/2015 2:27 PM):
 //	/**
