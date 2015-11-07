@@ -136,8 +136,8 @@ public class Teleop extends OpMode {
 
 		if (gamepad1.a) armPrimaryPosition -= armPrimaryDelta;
 		if (gamepad1.y) armPrimaryPosition += armPrimaryDelta;
-		if (gamepad1.x) armSecondaryPosition -= armSecondaryDelta;
-		if (gamepad1.b) armSecondaryPosition += armSecondaryDelta;
+		if (gamepad1.b) armSecondaryPosition -= armSecondaryDelta;
+		if (gamepad1.x) armSecondaryPosition += armSecondaryDelta;
 
 		// clip the position values so that they never exceed their allowed range.
 		armPrimaryPosition = Range.clip(armPrimaryPosition, 0, 1);

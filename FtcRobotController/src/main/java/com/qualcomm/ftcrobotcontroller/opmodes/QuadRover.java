@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * <p>
  * Enables control of the robot via the gamepad
  */
-public class Xeno4By4 extends OpMode {
+public class QuadRover extends OpMode {
 
 	DcMotor frontRight;
 	DcMotor rearRight;
@@ -49,7 +49,7 @@ public class Xeno4By4 extends OpMode {
 	/**
 	 * Constructor
 	 */
-	public Xeno4By4() {
+	public QuadRover() {
 
 	}
 
@@ -78,10 +78,10 @@ public class Xeno4By4 extends OpMode {
 		 *    "servo_1" controls the arm joint of the manipulator.
 		 *    "servo_6" controls the claw joint of the manipulator.
 		 */
-		frontRight = hardwareMap.dcMotor.get("motor_1");
-		rearRight = hardwareMap.dcMotor.get("motor_2");
-		frontLeft = hardwareMap.dcMotor.get("motor_3");
-		rearLeft = hardwareMap.dcMotor.get("motor_4");
+		rearRight = hardwareMap.dcMotor.get("motor_1");
+		rearLeft = hardwareMap.dcMotor.get("motor_2");
+		frontRight = hardwareMap.dcMotor.get("motor_3");
+		frontLeft = hardwareMap.dcMotor.get("motor_4");
 
 	}
 
@@ -119,10 +119,10 @@ public class Xeno4By4 extends OpMode {
 		throttleLeft =  (float)scaleInput(throttleLeft);
 
 		// write the values to the motors
-		frontRight.setPower(throttleRight);
-		rearRight.setPower(throttleRight);
-		frontLeft.setPower(-1 * throttleLeft);
-		rearLeft.setPower(-1 * throttleLeft);
+		frontRight.setPower(-1 * throttleRight);
+		rearRight.setPower(-1 * throttleRight);
+		frontLeft.setPower(1 * throttleLeft);
+		rearLeft.setPower(1 * throttleLeft);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
