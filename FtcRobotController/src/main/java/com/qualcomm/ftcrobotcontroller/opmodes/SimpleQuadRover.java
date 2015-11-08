@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * <p>
  * Enables control of the robot via the gamepad
  */
-public class QuadRover extends OpMode {
+public class SimpleQuadRover extends OpMode {
 
 	DcMotor frontRight;
 	DcMotor rearRight;
@@ -49,13 +49,13 @@ public class QuadRover extends OpMode {
 	/**
 	 * Constructor
 	 */
-	public QuadRover() {
+	public SimpleQuadRover() {
 
 	}
 
 	/*
 	 * Code to run when the op mode is first enabled goes here
-	 * 
+	 *
 	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
 	 */
 	@Override
@@ -67,13 +67,13 @@ public class QuadRover extends OpMode {
 		 * that the names of the devices must match the names used when you
 		 * configured your robot and created the configuration file.
 		 */
-		
+
 		/*
 		 * For the demo Tetrix K9 bot we assume the following,
 		 *   There are two motors "motor_1" and "motor_2"
 		 *   "motor_1" is on the right side of the bot.
 		 *   "motor_2" is on the left side of the bot and reversed.
-		 *   
+		 *
 		 * We also assume that there are two servos "servo_1" and "servo_6"
 		 *    "servo_1" controls the arm joint of the manipulator.
 		 *    "servo_6" controls the claw joint of the manipulator.
@@ -87,7 +87,7 @@ public class QuadRover extends OpMode {
 
 	/*
 	 * This method will be called repeatedly in a loop
-	 * 
+	 *
 	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#run()
 	 */
 	@Override
@@ -95,7 +95,7 @@ public class QuadRover extends OpMode {
 
 		/*
 		 * Gamepad 1
-		 * 
+		 *
 		 * Gamepad 1 controls the motors via the left stick, and it controls the
 		 * wrist/claw via the a,b, x, y buttons
 		 */
@@ -104,8 +104,8 @@ public class QuadRover extends OpMode {
 		// 1 is full down
 		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
 		// and 1 is full right
-		float throttleRight = gamepad1.right_stick_y;
-		float throttleLeft = gamepad1.left_stick_y;
+		float majorThrottle = gamepad1.left_stick_y;
+		float pivotThrottle = gamepad1.right_stick_x;
 		//float right = throttle - direction;
 		//float left = throttle + direction;
 
@@ -115,14 +115,14 @@ public class QuadRover extends OpMode {
 
 		// scale the joystick value to make it easier to control
 		// the robot more precisely at slower speeds.
-		throttleRight = (float)scaleInput(throttleRight);
-		throttleLeft =  (float)scaleInput(throttleLeft);
+		majorThrottle = (float)scaleInput(majorThrottle);
+		pivotThrottle =  (float)scaleInput(pivotThrottle);
 
 		// write the values to the motors
-		frontRight.setPower(1 * throttleRight);
-		rearRight.setPower(1 * throttleRight);
-		frontLeft.setPower(-1 * throttleLeft);
-		rearLeft.setPower(-1 * throttleLeft);
+		frontRight.setPower( majorThrottle + pivotThrottle);
+		rearRight.setPower(majorThrottle + pivotThrottle);
+		frontLeft.setPower(-1 * majorThrottle + pivotThrottle);
+		rearLeft.setPower(-1 * majorThrottle + pivotThrottle);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -136,7 +136,7 @@ public class QuadRover extends OpMode {
 
 	/*
 	 * Code to run when the op mode is first disabled goes here
-	 * 
+	 *
 	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#stop()
 	 */
 	@Override
@@ -146,7 +146,7 @@ public class QuadRover extends OpMode {
 
 
 	/*
-	 * This method scales the joystick input so for low joystick values, the 
+	 * This method scales the joystick input so for low joystick values, the
 	 * scaled value is less than linear.  This is to make it easier to drive
 	 * the robot more precisely at slower speeds.
 	 */
