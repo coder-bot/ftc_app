@@ -94,8 +94,8 @@ public class Teleop extends OpMode {
 		armSecondary = hardwareMap.servo.get("servo_2");
 
 		//Initial servo position values
-		armPrimaryPosition = 0;
-		armSecondaryPosition = 0;
+		armPrimaryPosition = 0.1;
+		armSecondaryPosition = 0.9;
 	}
 
 	/*
