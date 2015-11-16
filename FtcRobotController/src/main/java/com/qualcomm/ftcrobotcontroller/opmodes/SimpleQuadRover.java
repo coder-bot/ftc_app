@@ -33,6 +33,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * TeleOp Mode
@@ -104,25 +105,30 @@ public class SimpleQuadRover extends OpMode {
 		// 1 is full down
 		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
 		// and 1 is full right
-		float majorThrottle = gamepad1.left_stick_y;
+		float majorThrottle = -1 * gamepad1.left_stick_y;
 		float pivotThrottle = gamepad1.right_stick_x;
-		//float right = throttle - direction;
-		//float left = throttle + direction;
-
-		// clip the right/left values so that the values never exceed +/- 1
-		//right = Range.clip(right, -1, 1);
-		//left = Range.clip(left, -1, 1);
 
 		// scale the joystick value to make it easier to control
 		// the robot more precisely at slower speeds.
 		majorThrottle = (float)scaleInput(majorThrottle);
 		pivotThrottle =  (float)scaleInput(pivotThrottle);
 
+		float frTotalThrottle = majorThrottle - pivotThrottle;
+		float rrTotalThrottle = majorThrottle - pivotThrottle;
+		float flTotalThrottle = (-1 * majorThrottle - pivotThrottle);
+		float rlTotalThrottle = (-1 * majorThrottle - pivotThrottle);
+
+		// clip the right/left values so that the values never exceed +/- 1
+		frTotalThrottle = Range.clip(frTotalThrottle, -1, 1);
+		rrTotalThrottle = Range.clip(rrTotalThrottle, -1, 1);
+		flTotalThrottle = Range.clip(flTotalThrottle, -1, 1);
+		rlTotalThrottle = Range.clip(rlTotalThrottle, -1, 1);
+
 		// write the values to the motors
-		frontRight.setPower( majorThrottle + pivotThrottle);
-		rearRight.setPower(majorThrottle + pivotThrottle);
-		frontLeft.setPower(-1 * majorThrottle + pivotThrottle);
-		rearLeft.setPower(-1 * majorThrottle + pivotThrottle);
+		frontRight.setPower(frTotalThrottle);
+		rearRight.setPower(rrTotalThrottle);
+		frontLeft.setPower(flTotalThrottle);
+		rearLeft.setPower(rlTotalThrottle);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
