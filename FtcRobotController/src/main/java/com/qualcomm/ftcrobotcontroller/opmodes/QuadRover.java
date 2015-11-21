@@ -119,10 +119,10 @@ public class QuadRover extends OpMode {
 		throttleLeft =  (float)scaleInput(throttleLeft);
 
 		// write the values to the motors
-		frontRight.setPower(1 * throttleRight);
-		rearRight.setPower(1 * throttleRight);
-		frontLeft.setPower(-1 * throttleLeft);
-		rearLeft.setPower(-1 * throttleLeft);
+		frontRight.setPower(-1 * throttleRight);
+		rearRight.setPower(-1 * throttleRight);
+		frontLeft.setPower(1 * throttleLeft);
+		rearLeft.setPower(1 * throttleLeft);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
