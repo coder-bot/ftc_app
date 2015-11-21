@@ -58,6 +58,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("NullOp", NullOp.class);
     manager.register("Teleop", Teleop.class);
     manager.register("The QuadRover", QuadRover.class);
-    manager.register("The QuadRover for Dummies", SimpleQuadRover.class);
+    manager.register("SimpleQuadRover", SimpleQuadRover.class);
+    manager.register("XenoTeleop", XenoTeleop.class);
   }
 }
