@@ -101,7 +101,7 @@ public class Teleop extends OpMode {
 		armThree.setPosition(0.5);
 		armFour.setPosition(0.5);
 		wingCatchLeft.setPosition(0);
-		wingCatchRight.setPosition(0);
+		wingCatchRight.setPosition(1);
 	}
 
 	/*
@@ -139,15 +139,15 @@ public class Teleop extends OpMode {
 		else winch.setPower(0);
 
 		//control of wing-mounted catches for releasing climber
-		if (gamepad2.x) wingCatchRight.setPosition(0.5);
-		else if (gamepad2.a) wingCatchRight.setPosition(0);
+		if (gamepad2.b) wingCatchRight.setPosition(0.5);
+		else if (gamepad2.x) wingCatchRight.setPosition(1);
 
 		if (gamepad2.dpad_left) wingCatchLeft.setPosition(0.5);
 		if (gamepad2.dpad_right) wingCatchLeft.setPosition(0);
 
 		//motor control of primary arm components
 		armOneThrottle = -gamepad2.left_stick_y;
-		armOneThrottle = gamepad2.left_stick_y;
+		armTwoThrottle = gamepad2.right_stick_y;
 
 		armOneThrottle = Range.clip(armOneThrottle, -1, 1);
 		armTwoThrottle = Range.clip(armTwoThrottle, -1, 1);
