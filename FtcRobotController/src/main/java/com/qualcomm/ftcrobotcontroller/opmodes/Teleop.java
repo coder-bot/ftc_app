@@ -47,19 +47,17 @@ public class Teleop extends OpMode {
 	DcMotor leftDrive;
 	DcMotor rightDrive;
 
-	DcMotor winch;
-	DcMotor armOne;
-	DcMotor armTwo;
+	DcMotor winchExtension;
+	DcMotor winchPivot;
 
 	//motor power variables
 	double throttleRight, throttleLeft;
-	double armOneThrottle, armTwoThrottle;
 
 	//servo declarations
-	Servo armThree;
-	Servo armFour;
-	Servo wingCatchRight;
-	Servo wingCatchLeft;
+	//Servo armThree;
+	//Servo armFour;
+	//Servo wingCatchRight;
+	//Servo wingCatchLeft;
 
 // --Commented out by Inspection START (10/31/2015 2:27 PM):
 //	/**
@@ -86,22 +84,17 @@ public class Teleop extends OpMode {
 		//motor hardware map assignments
 		rightDrive = hardwareMap.dcMotor.get("motor_1");
 		leftDrive = hardwareMap.dcMotor.get("motor_2");
-		winch = hardwareMap.dcMotor.get("motor_3");
-		armOne = hardwareMap.dcMotor.get("motor_4");
-		armTwo = hardwareMap.dcMotor.get("motor_5");
+		winchExtension = hardwareMap.dcMotor.get("motor_3");
+		winchPivot = hardwareMap.dcMotor.get("motor_4");
 		rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-		armThree = hardwareMap.servo.get("servo_1");
-		armFour = hardwareMap.servo.get("servo_2");
-		wingCatchLeft = hardwareMap.servo.get("servo_3");
-		wingCatchRight = hardwareMap.servo.get("servo_4");
+		//wingCatchLeft = hardwareMap.servo.get("servo_3");
+		//wingCatchRight = hardwareMap.servo.get("servo_4");
 
 		//Initial servo position values
-		armThree.setPosition(0.5);
-		armFour.setPosition(0.5);
-		wingCatchLeft.setPosition(0);
-		wingCatchRight.setPosition(1);
+		//wingCatchLeft.setPosition(0);
+		//wingCatchRight.setPosition(1);
 	}
 
 	/*
@@ -133,39 +126,21 @@ public class Teleop extends OpMode {
 		leftDrive.setPower(throttleLeft);
 		rightDrive.setPower(throttleRight);
 
-		//control of winch motor
-		if (gamepad1.dpad_down) winch.setPower(-1);
-		else if (gamepad1.dpad_up) winch.setPower(1);
-		else winch.setPower(0);
+		//winch motor controls
+		if (gamepad1.dpad_left) winchExtension.setPower(-0.5);
+		else if (gamepad1.dpad_right) winchExtension.setPower(0.5);
+		else winchExtension.setPower(0);
+
+		if (gamepad1.dpad_down) winchPivot.setPower(-0.25);
+		else if (gamepad1.dpad_up) winchPivot.setPower(0.25);
+		else winchPivot.setPower(0);
 
 		//control of wing-mounted catches for releasing climber
-		if (gamepad2.b) wingCatchRight.setPosition(0.5);
-		else if (gamepad2.x) wingCatchRight.setPosition(1);
+		//if (gamepad2.b) wingCatchRight.setPosition(0.5);
+		//else if (gamepad2.x) wingCatchRight.setPosition(1);
 
-		if (gamepad2.dpad_left) wingCatchLeft.setPosition(0.5);
-		if (gamepad2.dpad_right) wingCatchLeft.setPosition(0);
-
-		//motor control of primary arm components
-		armOneThrottle = -gamepad2.left_stick_y;
-		armTwoThrottle = gamepad2.right_stick_y;
-
-		armOneThrottle = Range.clip(armOneThrottle, -1, 1);
-		armTwoThrottle = Range.clip(armTwoThrottle, -1, 1);
-
-		armOneThrottle = (float)scaleInput(armOneThrottle);
-		armTwoThrottle = (float)scaleInput(armTwoThrottle);
-
-		armOne.setPower(armOneThrottle);
-		armTwo.setPower(armTwoThrottle);
-
-		//servo control of secondary arm components
-		if (gamepad2.left_stick_x >= 0.9) armThree.setPosition(0);
-		else if (gamepad2.left_stick_x <= -0.9) armThree.setPosition(1);
-		else armThree.setPosition(0.5);
-
-		if (gamepad2.right_stick_x >= 0.9) armFour.setPosition(0);
-		else if (gamepad2.right_stick_x <= -0.9) armFour.setPosition(1);
-		else armFour.setPosition(0.5);
+		//if (gamepad2.dpad_left) wingCatchLeft.setPosition(0.5);
+		//if (gamepad2.dpad_right) wingCatchLeft.setPosition(0);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
