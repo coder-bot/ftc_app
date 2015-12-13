@@ -44,42 +44,27 @@ import com.qualcomm.robotcore.util.Range;
 public class Teleop extends OpMode {
 
 	//motor declarations
-	DcMotor leftDrive;
-	DcMotor rightDrive;
+	DcMotor leftDrive, rightDrive;
+	DcMotor winchExtension, winchPivot;
 
-	DcMotor winchExtension;
-	DcMotor winchPivot;
+	//servo declarations
+	//Servo wingCatchRight, wingCatchLeft;
 
 	//motor power variables
 	double throttleRight, throttleLeft;
 
-	//servo declarations
-	//Servo armThree;
-	//Servo armFour;
-	//Servo wingCatchRight;
-	//Servo wingCatchLeft;
+	//constructor
+	public Teleop() {
 
-// --Commented out by Inspection START (10/31/2015 2:27 PM):
-//	/**
-//	 * Constructor
-//	 */
-//	public Teleop() {
-//
-//	}
-// --Commented out by Inspection STOP (10/31/2015 2:27 PM)
+	}
 
 	/*
 	 * Code to run when the op mode is first enabled goes here
-	 * 
+	 *
 	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
 	 */
 	@Override
 	public void init() {
-		/*
-		 * Use the hardwareMap to get the dc motors and servos by name. Note
-		 * that the names of the devices must match the names used when you
-		 * configured your robot and created the configuration file.
-		 */
 
 		//motor hardware map assignments
 		rightDrive = hardwareMap.dcMotor.get("motor_1");
@@ -104,25 +89,20 @@ public class Teleop extends OpMode {
 	 */
 	@Override
 	public void loop() {
-		// left_stick_y ranges from -1 to 1, where -1 is full up, and
-		// 1 is full down
-		// direction: left_stick_x ranges from -1 to 1, where -1 is full left
-		// and 1 is full right
 
-		//setting motor power levels
+		//first, we read the joystick values and assign them to variables
 		throttleLeft = -gamepad1.left_stick_y;
 		throttleRight = -gamepad1.right_stick_y;
 
-		// clip the right/left values so that the values never exceed +/- 1
+		//next, we clip the right and left values so that they remain in the interval [-1,1]
 		throttleLeft = Range.clip(throttleLeft, -1, 1);
 		throttleRight = Range.clip(throttleRight, -1, 1);
 
-		// scale the joystick value to make it easier to control
-		// the robot more precisely at slower speeds.
+		//then, we scale the values for easier driving at low speeds
 		throttleLeft =  (float)scaleInput(throttleLeft);
 		throttleRight = (float)scaleInput(throttleRight);
 
-		// write the values to the motors
+		//finally, we write the values to the motors
 		leftDrive.setPower(throttleLeft);
 		rightDrive.setPower(throttleRight);
 
@@ -135,20 +115,16 @@ public class Teleop extends OpMode {
 		else if (gamepad1.dpad_up) winchPivot.setPower(0.25);
 		else winchPivot.setPower(0);
 
-		//control of wing-mounted catches for releasing climber
-		//if (gamepad2.b) wingCatchRight.setPosition(0.5);
-		//else if (gamepad2.x) wingCatchRight.setPosition(1);
+		//control of wing-mounted catches for releasing climbers
 
 		//if (gamepad2.dpad_left) wingCatchLeft.setPosition(0.5);
 		//if (gamepad2.dpad_right) wingCatchLeft.setPosition(0);
 
-		/*
-		 * Send telemetry data back to driver station. Note that if we are using
-		 * a legacy NXT-compatible motor controller, then the getPower() method
-		 * will return a null value. The legacy NXT-compatible motor controllers
-		 * are currently write only.
-		 */
-		telemetry.addData("Text", "(We are not currently reporting robot data.)");
+		//if (gamepad2.b) wingCatchRight.setPosition(0.5);
+		//else if (gamepad2.x) wingCatchRight.setPosition(1);
+
+		//telemetry data to be sent back to the driver station
+		telemetry.addData("Text", "This is Bionicus, programmed by Max. No other data to report at this time");
 
 	}
 
@@ -161,11 +137,7 @@ public class Teleop extends OpMode {
 	public void stop() {
 	}
 
-	/*
-	 * This method scales the joystick input so for low joystick values, the 
-	 * scaled value is less than linear.  This is to make it easier to drive
-	 * the robot more precisely at slower speeds.
-	 */
+	//this is the method used to scale the joystick values for easier driving at lower speeds.
 	double scaleInput(double dVal)  {
 		double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
 				0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
