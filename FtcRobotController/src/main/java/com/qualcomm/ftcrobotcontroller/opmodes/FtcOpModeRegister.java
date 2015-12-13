@@ -54,11 +54,6 @@ public class FtcOpModeRegister implements OpModeRegister {
      *
      * If two or more op modes are registered with the same name, the app will display an error.
      */
-
-    manager.register("NullOp", NullOp.class);
     manager.register("Teleop", Teleop.class);
-    manager.register("The QuadRover", QuadRover.class);
-    manager.register("SimpleQuadRover", SimpleQuadRover.class);
-    manager.register("XenoTeleop", XenoTeleop.class);
   }
 }
