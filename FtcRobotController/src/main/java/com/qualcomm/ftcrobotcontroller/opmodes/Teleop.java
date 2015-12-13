@@ -91,8 +91,8 @@ public class Teleop extends OpMode {
 	public void loop() {
 
 		//first, we read the joystick values and assign them to variables
-		throttleLeft = -gamepad1.left_stick_y;
-		throttleRight = -gamepad1.right_stick_y;
+		throttleLeft = gamepad1.left_stick_y;
+		throttleRight = gamepad1.right_stick_y;
 
 		//next, we clip the right and left values so that they remain in the interval [-1,1]
 		throttleLeft = Range.clip(throttleLeft, -1, 1);
@@ -107,8 +107,8 @@ public class Teleop extends OpMode {
 		rightDrive.setPower(throttleRight);
 
 		//winch motor controls
-		if (gamepad1.dpad_right) winchExtension.setPower(-0.3);
-		else if (gamepad1.dpad_left & !gamepad1.left_bumper) winchExtension.setPower(0.3);
+		if (gamepad1.dpad_right) winchExtension.setPower(-0.2);
+		else if (gamepad1.dpad_left & !gamepad1.left_bumper) winchExtension.setPower(0.2);
 		else if (gamepad1.dpad_left & gamepad1.left_bumper) winchExtension.setPower(1);
 		else winchExtension.setPower(0);
 
