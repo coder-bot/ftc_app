@@ -107,12 +107,13 @@ public class Teleop extends OpMode {
 		rightDrive.setPower(throttleRight);
 
 		//winch motor controls
-		if (gamepad1.dpad_left) winchExtension.setPower(-0.5);
-		else if (gamepad1.dpad_right) winchExtension.setPower(0.5);
+		if (gamepad1.dpad_right) winchExtension.setPower(-0.3);
+		else if (gamepad1.dpad_left & !gamepad1.left_bumper) winchExtension.setPower(0.3);
+		else if (gamepad1.dpad_left & gamepad1.left_bumper) winchExtension.setPower(1);
 		else winchExtension.setPower(0);
 
-		if (gamepad1.dpad_down) winchPivot.setPower(-0.25);
-		else if (gamepad1.dpad_up) winchPivot.setPower(0.25);
+		if (gamepad1.dpad_down) winchPivot.setPower(0.15);
+		else if (gamepad1.dpad_up) winchPivot.setPower(-0.15);
 		else winchPivot.setPower(0);
 
 		//control of wing-mounted catches for releasing climbers
