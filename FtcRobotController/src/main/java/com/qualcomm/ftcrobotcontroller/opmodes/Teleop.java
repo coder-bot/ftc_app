@@ -67,11 +67,11 @@ public class Teleop extends OpMode {
 	public void init() {
 
 		//motor hardware map assignments
-		rightDrive = hardwareMap.dcMotor.get("motor_1");
-		leftDrive = hardwareMap.dcMotor.get("motor_2");
+		leftDrive = hardwareMap.dcMotor.get("motor_1");
+		rightDrive = hardwareMap.dcMotor.get("motor_2");
 		winchExtension = hardwareMap.dcMotor.get("motor_3");
 		winchPivot = hardwareMap.dcMotor.get("motor_4");
-		rightDrive.setDirection(DcMotor.Direction.REVERSE);
+		leftDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
 		//wingCatchLeft = hardwareMap.servo.get("servo_3");
@@ -102,18 +102,24 @@ public class Teleop extends OpMode {
 		throttleLeft =  (float)scaleInput(throttleLeft);
 		throttleRight = (float)scaleInput(throttleRight);
 
-		//finally, we write the values to the motors
-		leftDrive.setPower(throttleLeft);
-		rightDrive.setPower(throttleRight);
+		//finally, we write the values to the motors, but only if the gunner does not have the motors under automatic control
+		if (!gamepad2.dpad_left & !gamepad2.left_bumper) {
+			leftDrive.setPower(throttleLeft);
+			rightDrive.setPower(throttleRight);
+		}
 
-		//winch motor controls
-		if (gamepad1.dpad_right) winchExtension.setPower(-0.2);
-		else if (gamepad1.dpad_left & !gamepad1.left_bumper) winchExtension.setPower(0.2);
-		else if (gamepad1.dpad_left & gamepad1.left_bumper) winchExtension.setPower(1);
+		//winch motor , including automatic drive control activation when the winch is commanded to move in at full power
+		if (gamepad2.dpad_right) winchExtension.setPower(-0.2);
+		else if (gamepad2.dpad_left & !gamepad2.left_bumper) winchExtension.setPower(0.2);
+		else if (gamepad2.dpad_left & gamepad2.left_bumper) {
+			winchExtension.setPower(1);
+			leftDrive.setPower(-1);
+			rightDrive.setPower(-1);
+		}
 		else winchExtension.setPower(0);
 
-		if (gamepad1.dpad_down) winchPivot.setPower(0.15);
-		else if (gamepad1.dpad_up) winchPivot.setPower(-0.15);
+		if (gamepad2.dpad_down) winchPivot.setPower(0.15);
+		else if (gamepad2.dpad_up) winchPivot.setPower(-0.15);
 		else winchPivot.setPower(0);
 
 		//control of wing-mounted catches for releasing climbers
@@ -125,7 +131,7 @@ public class Teleop extends OpMode {
 		//else if (gamepad2.x) wingCatchRight.setPosition(1);
 
 		//telemetry data to be sent back to the driver station
-		telemetry.addData("Text", "This is Bionicus, programmed by Max. No other data to report at this time");
+		telemetry.addData("Text", "This is Bionicus, programmed by Max. No other data to report at this time.");
 
 	}
 
