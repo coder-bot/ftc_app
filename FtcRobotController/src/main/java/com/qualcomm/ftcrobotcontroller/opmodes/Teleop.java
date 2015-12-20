@@ -48,10 +48,10 @@ public class Teleop extends OpMode {
 	DcMotor winchExtension, winchPivot;
 
 	//servo declarations
-	//Servo wingCatchRight, wingCatchLeft;
+	Servo rightWing, leftWing, permaHook;
 
 	//motor power variables
-	double throttleRight, throttleLeft;
+	double rightThrottle, leftThrottle;
 
 	//constructor
 	public Teleop() {
@@ -74,12 +74,14 @@ public class Teleop extends OpMode {
 		leftDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-		//wingCatchLeft = hardwareMap.servo.get("servo_3");
-		//wingCatchRight = hardwareMap.servo.get("servo_4");
+		leftWing = hardwareMap.servo.get("s1");
+		rightWing = hardwareMap.servo.get("s2");
+		permaHook = hardwareMap.servo.get("s3");
 
 		//Initial servo position values
-		//wingCatchLeft.setPosition(0);
-		//wingCatchRight.setPosition(1);
+		leftWing.setPosition(1);
+		rightWing.setPosition(0);
+		permaHook.setPosition(0.5);
 	}
 
 	/*
@@ -91,23 +93,23 @@ public class Teleop extends OpMode {
 	public void loop() {
 
 		//first, we read the joystick values and assign them to variables
-		throttleLeft = gamepad1.left_stick_y;
-		throttleRight = gamepad1.right_stick_y;
+		leftThrottle = gamepad1.left_stick_y;
+		rightThrottle = gamepad1.right_stick_y;
 
 		//next, we clip the right and left values so that they remain in the interval [-1,1]
-		throttleLeft = Range.clip(throttleLeft, -1, 1);
-		throttleRight = Range.clip(throttleRight, -1, 1);
+		leftThrottle = Range.clip(leftThrottle, -1, 1);
+		rightThrottle = Range.clip(rightThrottle, -1, 1);
 
 		//then, we scale the values for easier driving at low speeds
-		throttleLeft =  (float)scaleInput(throttleLeft);
-		throttleRight = (float)scaleInput(throttleRight);
-
+		leftThrottle =  (float)scaleInput(leftThrottle);
+		rightThrottle = (float)scaleInput(rightThrottle);
+/*
 		//finally, we write the values to the motors, but only if the gunner does not have the motors under automatic control
-		if (!gamepad2.dpad_left & !gamepad2.left_bumper) {
-			leftDrive.setPower(throttleLeft);
-			rightDrive.setPower(throttleRight);
+		if (!gamepad2.left_bumper) {
+			leftDrive.setPower(leftThrottle);
+			rightDrive.setPower(rightThrottle);
 		}
-
+*/
 		//winch motor , including automatic drive control activation when the winch is commanded to move in at full power
 		if (gamepad2.dpad_right) winchExtension.setPower(-0.2);
 		else if (gamepad2.dpad_left & !gamepad2.left_bumper) winchExtension.setPower(0.2);
@@ -116,19 +118,27 @@ public class Teleop extends OpMode {
 			leftDrive.setPower(-1);
 			rightDrive.setPower(-1);
 		}
-		else winchExtension.setPower(0);
+		else {
+			winchExtension.setPower(0);
+			leftDrive.setPower(leftThrottle);
+			rightDrive.setPower(rightThrottle);
+		}
 
 		if (gamepad2.dpad_down) winchPivot.setPower(0.15);
 		else if (gamepad2.dpad_up) winchPivot.setPower(-0.15);
 		else winchPivot.setPower(0);
 
-		//control of wing-mounted catches for releasing climbers
+		//control of servos
 
-		//if (gamepad2.dpad_left) wingCatchLeft.setPosition(0.5);
-		//if (gamepad2.dpad_right) wingCatchLeft.setPosition(0);
+		if (gamepad2.right_trigger > 0.3) leftWing.setPosition(0.5);
+		if (gamepad2.right_bumper) leftWing.setPosition(1);
 
-		//if (gamepad2.b) wingCatchRight.setPosition(0.5);
-		//else if (gamepad2.x) wingCatchRight.setPosition(1);
+		if (gamepad2.y) rightWing.setPosition(0.5);
+		else if (gamepad2.a) rightWing.setPosition(0);
+
+		if (gamepad2.b) permaHook.setPosition(0);
+		else if (gamepad2.x) permaHook.setPosition(1);
+		else permaHook.setPosition(0.5);
 
 		//telemetry data to be sent back to the driver station
 		telemetry.addData("Text", "This is Bionicus, programmed by Max. No other data to report at this time.");
