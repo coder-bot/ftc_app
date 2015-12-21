@@ -34,7 +34,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * TeleOp Mode
@@ -92,37 +91,28 @@ public class Teleop extends OpMode {
 	@Override
 	public void loop() {
 
-		//first, we read the joystick values and assign them to variables
-		leftThrottle = gamepad1.left_stick_y;
-		rightThrottle = gamepad1.right_stick_y;
-
-		//next, we clip the right and left values so that they remain in the interval [-1,1]
-		leftThrottle = Range.clip(leftThrottle, -1, 1);
-		rightThrottle = Range.clip(rightThrottle, -1, 1);
-
-		//then, we scale the values for easier driving at low speeds
-		leftThrottle =  (float)scaleInput(leftThrottle);
-		rightThrottle = (float)scaleInput(rightThrottle);
-/*
-		//finally, we write the values to the motors, but only if the gunner does not have the motors under automatic control
-		if (!gamepad2.left_bumper) {
-			leftDrive.setPower(leftThrottle);
-			rightDrive.setPower(rightThrottle);
+		if (gamepad2.dpad_left) {
+			if (!gamepad2.left_bumper) winchExtension.setPower(0.2);
+			else {
+				//these statements are run when left_bumper is true
+				winchExtension.setPower(1);
+				leftThrottle = -1;
+				rightThrottle = -1;
+			}
 		}
-*/
-		//winch motor , including automatic drive control activation when the winch is commanded to move in at full power
-		if (gamepad2.dpad_right) winchExtension.setPower(-0.2);
-		else if (gamepad2.dpad_left & !gamepad2.left_bumper) winchExtension.setPower(0.2);
-		else if (gamepad2.dpad_left & gamepad2.left_bumper) {
-			winchExtension.setPower(1);
-			leftDrive.setPower(-1);
-			rightDrive.setPower(-1);
-		}
+		else if (gamepad2.dpad_right) {
+			winchExtension.setPower(-0.2);
+			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
+			rightThrottle = (float)scaleInput(gamepad2.right_stick_y);
+			}
 		else {
 			winchExtension.setPower(0);
-			leftDrive.setPower(leftThrottle);
-			rightDrive.setPower(rightThrottle);
-		}
+			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
+			rightThrottle = (float)scaleInput(gamepad2.right_stick_y);
+			}
+
+		leftDrive.setPower(leftThrottle);
+		rightDrive.setPower(rightThrottle);
 
 		if (gamepad2.dpad_down) winchPivot.setPower(0.15);
 		else if (gamepad2.dpad_up) winchPivot.setPower(-0.15);
