@@ -55,8 +55,8 @@ public class TeleopManual extends OpMode {
     //drive motor regulation variables
     boolean isPrimed = false;
     double primingStatus = 0;
-    double primingStartupDelta = 0.002;
-    double primingCooldownDelta = 0.001;
+    double primingStartupDelta = 0.2;
+    double primingCooldownDelta = 0.1;
 
 	//constructor
 	public TeleopManual() {
@@ -144,18 +144,18 @@ public class TeleopManual extends OpMode {
             else if (primingStatus > 0) primingStatus -= primingCooldownDelta;
         }
 
-        if (primingStatus == 1) isPrimed = true;
+        if (primingStatus == 100) isPrimed = true;
 
 		//telemetry data to be sent back to the driver station
         if (!isPrimed) {
-            telemetry.addData("Priming Status", primingStatus * 100 + "%");
+            telemetry.addData("Priming Status", primingStatus + "%");
             telemetry.addData("Alert", "Engines are not primed!");
         }
         else {
             //implies isPrimed is true
-            telemetry.addData("Priming Status", primingStatus * 100 + "%");
+            telemetry.addData("Priming Status", primingStatus + "%");
             telemetry.addData("No alerts to show", "Engines are primed!");
-            telemetry.addData("Text", "This is Bionicus, programmed by Max. No other data to report at this time.");
+            telemetry.addData("Robot Status", "This is Bionicus, programmed by Max. No other data to report at this time.");
         }
 
 	}

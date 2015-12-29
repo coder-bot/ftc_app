@@ -91,7 +91,12 @@ public class Teleop extends OpMode {
 	@Override
 	public void loop() {
 
-		if (gamepad2.dpad_left) {
+		if (gamepad2.dpad_right) {
+			winchExtension.setPower(-0.2);
+			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
+			rightThrottle = (float)scaleInput(gamepad2.right_stick_y);
+			}
+		else if (gamepad2.dpad_left) {
 			if (!gamepad2.left_bumper) winchExtension.setPower(0.2);
 			else {
 				//these statements are run when left_bumper is true
@@ -100,11 +105,6 @@ public class Teleop extends OpMode {
 				rightThrottle = -1;
 			}
 		}
-		else if (gamepad2.dpad_right) {
-			winchExtension.setPower(-0.2);
-			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(gamepad2.right_stick_y);
-			}
 		else {
 			winchExtension.setPower(0);
 			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
@@ -131,7 +131,7 @@ public class Teleop extends OpMode {
 		else permaHook.setPosition(0.5);
 
 		//telemetry data to be sent back to the driver station
-		telemetry.addData("Text", "This is Bionicus, programmed by Max. No other data to report at this time.");
+		telemetry.addData("Robot Status", "This is Bionicus, programmed by Max. No other data to report at this time.");
 
 	}
 
