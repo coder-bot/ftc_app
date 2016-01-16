@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * <p>
  * Enables control of the robot via the gamepad
  */
-public class Teleop extends OpMode {
+public class MiniTeleop extends OpMode {
 
 	//motor declarations
 	DcMotor leftDrive, rightDrive;
@@ -53,7 +53,7 @@ public class Teleop extends OpMode {
 	double rightThrottle, leftThrottle;
 
 	//constructor
-	public Teleop() {
+	public MiniTeleop() {
 
 	}
 
@@ -113,8 +113,6 @@ public class Teleop extends OpMode {
 
 		leftDrive.setPower(leftThrottle);
 		rightDrive.setPower(rightThrottle);
-
-		//experiment with exception handling upon motor assignments outside of [-1, 1] bounds to avoid system crash
 
 		if (gamepad2.dpad_down) winchPivot.setPower(0.15);
 		else if (gamepad2.dpad_up) winchPivot.setPower(-0.15);
