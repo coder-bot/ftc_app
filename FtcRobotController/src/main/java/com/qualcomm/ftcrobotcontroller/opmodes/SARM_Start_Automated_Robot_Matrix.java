@@ -40,28 +40,40 @@ import com.qualcomm.robotcore.hardware.Servo;
  * <p>
  * Enables control of the robot via the gamepad
  */
-public class Teleop extends OpMode {
+public class SARM_Start_Automated_Robot_Matrix extends OpMode {
 
 	//motor declarations
 	DcMotor leftDrive, rightDrive;
 	DcMotor winchExtension, winchPivot;
 
 	//servo declarations
-	Servo rightWing, leftWing, permaHook;
+	Servo rightWing, climberCarrier, permaHook;
 
-	//motor power variables
-	double rightThrottle, leftThrottle;
+	//boolean value for checking initial motor assignment status
+    boolean motorsConfigured, climbersDeposited;
+
+    //servo and motor assignment variables
+    double driveMotorPower = 1;
+    double carrierReleasePosition
 
 	//constructor
-	public Teleop() {
+	public SARM_Start_Automated_Robot_Matrix() {
 
 	}
 
-	/*
-	 * Code to run when the op mode is first enabled goes here
-	 *
-	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
-	 */
+    public void configureMotors() {
+
+    }
+
+    public void depositClimbers() {
+        climberCarrier.setPosition(0.5);
+    }
+
+    public void allStop() {
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+    }
+
 	@Override
 	public void init() {
 
@@ -74,12 +86,12 @@ public class Teleop extends OpMode {
 		rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-		leftWing = hardwareMap.servo.get("s1");
+		climberCarrier = hardwareMap.servo.get("s1");
 		rightWing = hardwareMap.servo.get("s2");
 		permaHook = hardwareMap.servo.get("s3");
 
 		//Initial servo position values
-		leftWing.setPosition(1);
+		climberCarrier.setPosition(1);
 		rightWing.setPosition(0);
 		permaHook.setPosition(0.5);
 	}
@@ -92,50 +104,25 @@ public class Teleop extends OpMode {
 	@Override
 	public void loop() {
 
-		if (gamepad2.dpad_right) {
-			winchExtension.setPower(-0.2);
-			leftThrottle = (float)scaleInput(-gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(-gamepad2.right_stick_y);
-			}
-		else if (gamepad2.dpad_left) {
-			if (!gamepad2.left_bumper) winchExtension.setPower(0.2);
-			else {
-				//these statements are run when left_bumper is true
-				winchExtension.setPower(1);
-				leftThrottle = -1;
-				rightThrottle = -1;
-			}
-		}
-		else {
-			winchExtension.setPower(0);
-			leftThrottle = (float)scaleInput(-gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(-gamepad2.right_stick_y);
-			}
-
-		leftDrive.setPower(leftThrottle);
-		rightDrive.setPower(rightThrottle);
-
-		//experiment with exception handling upon motor assignments outside of [-1, 1] bounds to avoid system crash
-
-		if (gamepad2.dpad_down) winchPivot.setPower(0.15);
-		else if (gamepad2.dpad_up) winchPivot.setPower(-0.15);
-		else winchPivot.setPower(0);
-
-		//control of servos
-
-		if (gamepad2.right_trigger > 0.3) leftWing.setPosition(0.5);
-		if (gamepad2.right_bumper) leftWing.setPosition(1);
-
-		if (gamepad2.y) rightWing.setPosition(0.5);
-		else if (gamepad2.a) rightWing.setPosition(0);
-
-		if (gamepad2.b) permaHook.setPosition(0);
-		else if (gamepad2.x) permaHook.setPosition(1);
-		else permaHook.setPosition(0.5);
-
 		//telemetry data to be sent back to the driver station
-		telemetry.addData("Robot Status", "This is Bionicus, programmed by Max. No other data to report at this time.");
+		telemetry.addData("Robot Status", "Running autonomous...");
 
+        if (getRuntime() < 3) {
+            if (!motorsConfigured) {
+                leftDrive.setPower(1);
+                rightDrive.setPower(1);
+                motorsConfigured = true;
+            }
+            else if (motorsConfigured) {
+                //don't update motor power values if they've already been configured
+            }
+        }
+        else if (getRuntime() > 3) {
+            if (!climbersDeposited) {
+                allStop();
+                //depositClimbers();
+            }
+        }
 	}
 
 	/*
@@ -145,35 +132,5 @@ public class Teleop extends OpMode {
 	 */
 	@Override
 	public void stop() {
-	}
-
-	//this is the method used to scale the joystick values for easier driving at lower speeds.
-	double scaleInput(double dVal)  {
-		double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
-				0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
-
-		// get the corresponding index for the scaleInput array.
-		int index = (int) (dVal * 16.0);
-
-		// index should be positive.
-		if (index < 0) {
-			index = -index;
-		}
-
-		// index cannot exceed size of array minus 1.
-		if (index > 16) {
-			index = 16;
-		}
-
-		// get value from the array.
-		double dScale;
-		if (dVal < 0) {
-			dScale = -scaleArray[index];
-		} else {
-			dScale = scaleArray[index];
-		}
-
-		// return scaled value.
-		return dScale;
 	}
 }
