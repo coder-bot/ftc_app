@@ -47,27 +47,17 @@ public class SARM_Start_Automated_Robot_Matrix extends OpMode {
 	DcMotor winchExtension, winchPivot;
 
 	//servo declarations
-	Servo rightWing, climberCarrier, permaHook;
-
-	//boolean value for checking initial motor assignment status
-    boolean motorsConfigured, climbersDeposited;
+	Servo permaHook, climberCarrier;
 
     //servo and motor assignment variables
     double driveMotorPower = 1;
-    double carrierReleasePosition
+    double carrierStandbyPosition = 1;
+    double carrierDepositPosition = 0.4;
 
 	//constructor
 	public SARM_Start_Automated_Robot_Matrix() {
 
 	}
-
-    public void configureMotors() {
-
-    }
-
-    public void depositClimbers() {
-        climberCarrier.setPosition(0.5);
-    }
 
     public void allStop() {
         leftDrive.setPower(0);
@@ -83,17 +73,15 @@ public class SARM_Start_Automated_Robot_Matrix extends OpMode {
 		winchExtension = hardwareMap.dcMotor.get("motor_3");
 		winchPivot = hardwareMap.dcMotor.get("motor_4");
 
-		rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-		climberCarrier = hardwareMap.servo.get("s1");
-		rightWing = hardwareMap.servo.get("s2");
-		permaHook = hardwareMap.servo.get("s3");
+        permaHook = hardwareMap.servo.get("s1");
+		climberCarrier = hardwareMap.servo.get("s2");
 
-		//Initial servo position values
-		climberCarrier.setPosition(1);
-		rightWing.setPosition(0);
-		permaHook.setPosition(0.5);
+        //initial servo values
+        permaHook.setPosition(0.5);
+        climberCarrier.setPosition(1);
 	}
 
 	/*
@@ -104,26 +92,31 @@ public class SARM_Start_Automated_Robot_Matrix extends OpMode {
 	@Override
 	public void loop() {
 
-		//telemetry data to be sent back to the driver station
-		telemetry.addData("Robot Status", "Running autonomous...");
+        telemetry.addData("Robot Status", "10 second waiting period. Please hold...");
 
-        if (getRuntime() < 3) {
-            if (!motorsConfigured) {
-                leftDrive.setPower(1);
-                rightDrive.setPower(1);
-                motorsConfigured = true;
-            }
-            else if (motorsConfigured) {
-                //don't update motor power values if they've already been configured
-            }
+        while(getRuntime() < 10) {
+            //10 second delay
         }
-        else if (getRuntime() > 3) {
-            if (!climbersDeposited) {
-                allStop();
-                //depositClimbers();
-            }
+        telemetry.addData("Updated Status", "Wait complete! Running the SARM...");
+        leftDrive.setPower(driveMotorPower);
+        rightDrive.setPower(driveMotorPower);
+        double driveStartTime = getRuntime();
+
+        while ((getRuntime() - driveStartTime) < 3) {
+            //wait while 3 seconds pass
         }
-	}
+
+        allStop();
+        climberCarrier.setPosition(carrierDepositPosition);
+        double initialTime = getRuntime();
+        while (getRuntime() - initialTime < 1) {
+            //wait while the servo moves
+        }
+        climberCarrier.setPosition(carrierStandbyPosition);
+        while (true) {
+        //wait for end of autonomous
+        }
+    }
 
 	/*
 	 * Code to run when the op mode is first disabled goes here

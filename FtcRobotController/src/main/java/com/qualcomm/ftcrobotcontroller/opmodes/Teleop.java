@@ -47,7 +47,7 @@ public class Teleop extends OpMode {
 	DcMotor winchExtension, winchPivot;
 
 	//servo declarations
-	Servo rightWing, leftWing, permaHook;
+	Servo permaHook, climberCarrier;
 
 	//motor power variables
 	double rightThrottle, leftThrottle;
@@ -66,22 +66,20 @@ public class Teleop extends OpMode {
 	public void init() {
 
 		//motor hardware map assignments
-		leftDrive = hardwareMap.dcMotor.get("motor_1");
-		rightDrive = hardwareMap.dcMotor.get("motor_2");
+		leftDrive = hardwareMap.dcMotor.get("motor_2");
+		rightDrive = hardwareMap.dcMotor.get("motor_1");
 		winchExtension = hardwareMap.dcMotor.get("motor_3");
 		winchPivot = hardwareMap.dcMotor.get("motor_4");
 
 		rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-		leftWing = hardwareMap.servo.get("s1");
-		rightWing = hardwareMap.servo.get("s2");
-		permaHook = hardwareMap.servo.get("s3");
+        permaHook = hardwareMap.servo.get("s1");
+		climberCarrier = hardwareMap.servo.get("s2");
 
 		//Initial servo position values
-		leftWing.setPosition(1);
-		rightWing.setPosition(0);
 		permaHook.setPosition(0.5);
+        climberCarrier.setPosition(1);
 	}
 
 	/*
@@ -94,28 +92,29 @@ public class Teleop extends OpMode {
 
 		if (gamepad2.dpad_right) {
 			winchExtension.setPower(-0.2);
-			leftThrottle = (float)scaleInput(-gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(-gamepad2.right_stick_y);
+			leftThrottle = (float)scaleInput(-gamepad1.left_stick_y);
+			rightThrottle = (float)scaleInput(-gamepad1.right_stick_y);
 			}
 		else if (gamepad2.dpad_left) {
 			if (!gamepad2.left_bumper) winchExtension.setPower(0.2);
 			else {
 				//these statements are run when left_bumper is true
 				winchExtension.setPower(1);
-				leftThrottle = -1;
-				rightThrottle = -1;
+				leftThrottle = 1;
+				rightThrottle = 1;
 			}
+			//TODO work out logic for case in which both the dpad_left and the left_bumper are down, and then the left_bumper is released
 		}
 		else {
 			winchExtension.setPower(0);
-			leftThrottle = (float)scaleInput(-gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(-gamepad2.right_stick_y);
+			leftThrottle = (float)scaleInput(-gamepad1.left_stick_y);
+			rightThrottle = (float)scaleInput(-gamepad1.right_stick_y);
 			}
 
 		leftDrive.setPower(leftThrottle);
 		rightDrive.setPower(rightThrottle);
 
-		//experiment with exception handling upon motor assignments outside of [-1, 1] bounds to avoid system crash
+		//experiment with custom exception handling upon motor assignments outside of [-1, 1] bounds to avoid system crash
 
 		if (gamepad2.dpad_down) winchPivot.setPower(0.15);
 		else if (gamepad2.dpad_up) winchPivot.setPower(-0.15);
@@ -123,15 +122,12 @@ public class Teleop extends OpMode {
 
 		//control of servos
 
-		if (gamepad2.right_trigger > 0.3) leftWing.setPosition(0.5);
-		if (gamepad2.right_bumper) leftWing.setPosition(1);
-
-		if (gamepad2.y) rightWing.setPosition(0.5);
-		else if (gamepad2.a) rightWing.setPosition(0);
-
 		if (gamepad2.b) permaHook.setPosition(0);
 		else if (gamepad2.x) permaHook.setPosition(1);
 		else permaHook.setPosition(0.5);
+
+        if (gamepad2.y) climberCarrier.setPosition(0.4);
+        if (gamepad2.a) climberCarrier.setPosition(1);
 
 		//telemetry data to be sent back to the driver station
 		telemetry.addData("Robot Status", "This is Bionicus, programmed by Max. No other data to report at this time.");

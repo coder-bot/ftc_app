@@ -108,13 +108,13 @@ public class TeleopManual extends OpMode {
 		}
 		else if (gamepad2.dpad_right) {
 			winchExtension.setPower(-0.2);
-			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(gamepad2.right_stick_y);
+			leftThrottle = (float)scaleInput(gamepad1.left_stick_y);
+			rightThrottle = (float)scaleInput(gamepad1.right_stick_y);
 			}
 		else {
 			winchExtension.setPower(0);
-			leftThrottle = (float)scaleInput(gamepad2.left_stick_y);
-			rightThrottle = (float)scaleInput(gamepad2.right_stick_y);
+			leftThrottle = (float)scaleInput(gamepad1.left_stick_y);
+			rightThrottle = (float)scaleInput(gamepad1.right_stick_y);
 			}
 
         if (isPrimed) {
