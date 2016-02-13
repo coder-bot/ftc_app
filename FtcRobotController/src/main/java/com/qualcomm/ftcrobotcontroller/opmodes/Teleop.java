@@ -68,14 +68,14 @@ public class Teleop extends OpMode {
 		//motor hardware map assignments
 		leftDrive = hardwareMap.dcMotor.get("motor_2");
 		rightDrive = hardwareMap.dcMotor.get("motor_1");
-		winchExtension = hardwareMap.dcMotor.get("motor_3");
-		winchPivot = hardwareMap.dcMotor.get("motor_4");
+		winchExtension = hardwareMap.dcMotor.get("motor_4");
+		winchPivot = hardwareMap.dcMotor.get("motor_3");
 
 		rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-        permaHook = hardwareMap.servo.get("s1");
-		climberCarrier = hardwareMap.servo.get("s2");
+        permaHook = hardwareMap.servo.get("s2");
+		climberCarrier = hardwareMap.servo.get("s1");
 
 		//Initial servo position values
 		permaHook.setPosition(0.5);
