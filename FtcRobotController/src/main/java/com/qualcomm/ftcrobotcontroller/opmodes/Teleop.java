@@ -34,6 +34,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * TeleOp Mode
@@ -47,10 +48,15 @@ public class Teleop extends OpMode {
 	DcMotor winchExtension, winchPivot;
 
 	//servo declarations
-	Servo permaHook, climberCarrier;
+	Servo permaHook, leftWing, rightWing;
 
 	//motor power variables
 	double rightThrottle, leftThrottle;
+
+    //servo control variables
+    double leftWingPosition = 0;
+    double rightWingPosition = 1;
+    double servoDelta = 0.005;
 
 	//constructor
 	public Teleop() {
@@ -75,11 +81,13 @@ public class Teleop extends OpMode {
 
 		//servo hardware map assignments
         permaHook = hardwareMap.servo.get("s2");
-		climberCarrier = hardwareMap.servo.get("s1");
+        leftWing = hardwareMap.servo.get("lw");
+        rightWing = hardwareMap.servo.get("rw");
 
 		//Initial servo position values
 		permaHook.setPosition(0.5);
-        climberCarrier.setPosition(1);
+        leftWing.setPosition(leftWingPosition);
+        rightWing.setPosition(rightWingPosition);
 	}
 
 	/*
@@ -91,15 +99,15 @@ public class Teleop extends OpMode {
 	public void loop() {
 
 		if (gamepad2.dpad_right) {
-			winchExtension.setPower(-0.2);
+			winchExtension.setPower(0.2);
 			leftThrottle = (float)scaleInput(-gamepad1.left_stick_y);
 			rightThrottle = (float)scaleInput(-gamepad1.right_stick_y);
 			}
 		else if (gamepad2.dpad_left) {
-			if (!gamepad2.left_bumper) winchExtension.setPower(0.2);
+			if (!gamepad2.left_bumper) winchExtension.setPower(-0.2);
 			else {
 				//these statements are run when left_bumper is true
-				winchExtension.setPower(1);
+				winchExtension.setPower(-1);
 				leftThrottle = 1;
 				rightThrottle = 1;
 			}
@@ -126,8 +134,17 @@ public class Teleop extends OpMode {
 		else if (gamepad2.x) permaHook.setPosition(1);
 		else permaHook.setPosition(0.5);
 
-        if (gamepad2.y) climberCarrier.setPosition(0.4);
-        if (gamepad2.a) climberCarrier.setPosition(1);
+        if (gamepad1.dpad_left) leftWingPosition += servoDelta;
+        else if (gamepad1.dpad_right) leftWingPosition -= servoDelta;
+
+        if (gamepad1.x) rightWingPosition += servoDelta;
+        else if (gamepad1.b) rightWingPosition -= servoDelta;
+
+        leftWingPosition = Range.clip(leftWingPosition, 0, 1);
+        rightWingPosition = Range.clip(rightWingPosition, 0, 1);
+
+        leftWing.setPosition(leftWingPosition);
+        rightWing.setPosition(rightWingPosition);
 
 		//telemetry data to be sent back to the driver station
 		telemetry.addData("Robot Status", "This is Bionicus, programmed by Max. No other data to report at this time.");
