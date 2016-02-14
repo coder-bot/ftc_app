@@ -104,14 +104,18 @@ public class Teleop extends OpMode {
 			rightThrottle = (float)scaleInput(-gamepad1.right_stick_y);
 			}
 		else if (gamepad2.dpad_left) {
-			if (!gamepad2.left_bumper) winchExtension.setPower(-0.2);
+			if (!gamepad2.left_bumper) {
+				//these statements are run when left_bumper is false
+				winchExtension.setPower(-0.2);
+				leftThrottle = 0;
+				rightThrottle = 0;
+			}
 			else {
 				//these statements are run when left_bumper is true
 				winchExtension.setPower(-1);
 				leftThrottle = 1;
 				rightThrottle = 1;
 			}
-			//TODO work out logic for case in which both the dpad_left and the left_bumper are down, and then the left_bumper is released
 		}
 		else {
 			winchExtension.setPower(0);
