@@ -48,7 +48,7 @@ public class Teleop extends OpMode {
 	DcMotor winchExtension, winchPivot;
 
 	//servo declarations
-	Servo permaHook, leftWing, rightWing;
+	Servo leftPermaHook, rightPermaHook, leftWing, rightWing;
 
 	//motor power variables
 	double rightThrottle, leftThrottle;
@@ -80,12 +80,14 @@ public class Teleop extends OpMode {
 		rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
 		//servo hardware map assignments
-        permaHook = hardwareMap.servo.get("s2");
+		leftPermaHook = hardwareMap.servo.get("s1");
+        rightPermaHook = hardwareMap.servo.get("s2");
         leftWing = hardwareMap.servo.get("lw");
         rightWing = hardwareMap.servo.get("rw");
 
 		//Initial servo position values
-		permaHook.setPosition(0.5);
+		leftPermaHook.setPosition(0.5);
+		rightPermaHook.setPosition(0.5);
         leftWing.setPosition(leftWingPosition);
         rightWing.setPosition(rightWingPosition);
 	}
@@ -134,9 +136,13 @@ public class Teleop extends OpMode {
 
 		//control of servos
 
-		if (gamepad2.b) permaHook.setPosition(0);
-		else if (gamepad2.x) permaHook.setPosition(1);
-		else permaHook.setPosition(0.5);
+		if (gamepad2.a) leftPermaHook.setPosition(0);
+		else if (gamepad2.y) leftPermaHook.setPosition(1);
+		else leftPermaHook.setPosition(0.5);
+
+		if (gamepad2.b) rightPermaHook.setPosition(0);
+		else if (gamepad2.x) rightPermaHook.setPosition(1);
+		else rightPermaHook.setPosition(0.5);
 
         if (gamepad1.dpad_left) leftWingPosition += servoDelta;
         else if (gamepad1.dpad_right) leftWingPosition -= servoDelta;
